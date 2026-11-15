@@ -1,0 +1,29 @@
+section,id,item,value,unit,class,source_or_basis,working
+input,M1,Machine time for a scored evaluation run,a few seconds,per run,measured,rag-eval-harness README.md (reproduce.sh reruns the scored sets in a few seconds on CPU),Not a cost driver; excluded from the computation
+input,M2,Judge cost in the modelled configuration,0,CAD per run,measured,"rag-eval-harness REPORT.md and level-2-build/judge.py: the default judge is a local lexical proxy at zero per-call cost, the embedding judge runs on CPU with no API key, and judge calls are hard-capped per run",Run cash cost enters the model as zero; see A7 for the CI allowance
+input,M3,Regression gate separation on the source synthetic Deep set,0.719 vs 1.000,pass rate,measured,"rag-eval-harness REPORT.md (Deep run: 23 of 32 without rerank, 32 of 32 with; gate threshold 0.900)",Used qualitatively only: evidence the gate discriminates. Not a client outcome and not monetized
+input,M4,Reranker transfer to real data,not supported,hypothesis verdict,measured,"rag-eval-harness REPORT.md hypothesis H2: SQuAD gold in top passage 315 of 500 without rerank, 319 with, exact sign test p 0.67",Reason no quality or defect-escape saving is monetized anywhere in this model
+input,A1,Evaluation cycles per year,12,cycles,assumption,Monthly release cadence of the illustrative scenario,One of the two most fragile assumptions; varied in S3 and S4
+input,A2,Sampled answers reviewed per cycle in the manual baseline,200,answers,assumption,Scenario planning figure for a monthly support-assistant release,Drives the manual baseline linearly
+input,A3,Manual review time per sampled answer,6,minutes,assumption,"Scenario planning figure: read the question, the retrieved passage, and the answer; judge against the help-centre source","One of the two most fragile assumptions; varied in S1, S2, and S4"
+input,A4,Loaded cost of the reviewer,75,CAD per hour,assumption,"Scenario planning figure for an ML engineer or QA analyst, fully loaded",Also sets the adoption day rate in A6
+input,A5,Share of the sample the harness flags for human review,15,percent,assumption,"Scenario planning figure. The source repo's real-data failure shares vary widely by metric and dataset, so no source figure is borrowed for this",Sets the with-harness review volume in C5
+input,A5b,Fixed supervision per cycle with the harness,1,hour,assumption,"Scenario planning figure: start the run, read the dashboard, record the decision",Added to the flagged-case review time in C5
+input,A6,Adoption effort one-time,5,engineer-days,assumption,"Build the Firm's golden set, wire the pipeline, set the gate (open item OI-1 in docs/01-business-requirements.md)",Costed in C8 at 8 hours per day at the A4 rate
+input,A7,Cash cost per evaluation run,0,CAD,assumption,CI minutes treated as negligible; the run itself is cash-free per M2,Kept as an explicit zero so the assumption is visible
+computation,C1,Manual review minutes per cycle,1200,minutes,computed,A2 x A3,200 x 6 = 1200
+computation,C2,Manual review hours per cycle,20,hours,computed,C1 / 60,1200 / 60 = 20
+computation,C3,Manual baseline cost per cycle,1500,CAD,computed,C2 x A4,20 x 75 = 1500
+computation,C4,Manual baseline cost per year,18000,CAD,computed,C3 x A1,1500 x 12 = 18000
+computation,C5,With-harness human hours per cycle,4,hours,computed,(A2 x A5 x A3 / 60) + A5b,(200 x 0.15 x 6 / 60) + 1 = 3 + 1 = 4
+computation,C6,With-harness cost per cycle,300,CAD,computed,C5 x A4,4 x 75 = 300
+computation,C7,With-harness running cost per year,3600,CAD,computed,C6 x A1,300 x 12 = 3600
+computation,C8,Adoption cost one-time,3000,CAD,computed,A6 x 8 x A4,5 x 8 x 75 = 3000
+computation,C9,Year-1 total cost of the harness path,6600,CAD,computed,C7 + C8,3600 + 3000 = 6600
+computation,C10,Year-1 net benefit,11400,CAD,computed,C4 - C9,18000 - 6600 = 11400
+computation,C11,Year-1 ROI,172.7,percent,computed,C10 / C9,"11400 / 6600 = 172.7 percent (about 173 percent). Model output under the stated assumptions, not a realized saving"
+computation,C12,Payback on adoption cost,2.5,months,computed,C8 / (C3 - C6),3000 / (1500 - 300) = 2.5
+sensitivity,S1,A3 at 3 minutes per review (A1 at base),71,percent year-1 ROI,computed,Manual per cycle 750 CAD; harness per cycle 187.50 CAD; annual baseline 9000; running 2250; year-1 net 9000 - (3000 + 2250) = 3750; ROI 3750 / 5250,Fragile assumption A3 moved down
+sensitivity,S2,A3 at 10 minutes per review (A1 at base),257,percent year-1 ROI,computed,Manual per cycle 2500 CAD; harness per cycle 450 CAD; annual baseline 30000; running 5400; year-1 net 30000 - (3000 + 5400) = 21600; ROI 21600 / 8400,Fragile assumption A3 moved up
+sensitivity,S3,A1 at 4 cycles per year (A3 at base),43,percent year-1 ROI,computed,Annual baseline 6000; running 1200; year-1 net 6000 - (3000 + 1200) = 1800; ROI 1800 / 4200,Fragile assumption A1 moved down
+sensitivity,S4,Combined unfavourable case (A3 at 3 minutes and A1 at 4 cycles),-20,percent year-1 ROI,computed,Annual baseline 3000; running 750; year-1 net 3000 - (3000 + 750) = -750; ROI -750 / 3750,"At low cadence and fast manual review the model does not pay back in year 1. Stated plainly, not rounded away"
