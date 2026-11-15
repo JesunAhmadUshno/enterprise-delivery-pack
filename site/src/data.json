@@ -1,0 +1,308 @@
+{
+  "inputs": [
+    {
+      "id": "M1",
+      "item": "Machine time for a scored evaluation run",
+      "value": "a few seconds",
+      "unit": "per run",
+      "kind": "measured",
+      "source": "rag-eval-harness README.md (reproduce.sh reruns the scored sets in a few seconds on CPU)",
+      "note": "Not a cost driver; excluded from the computation"
+    },
+    {
+      "id": "M2",
+      "item": "Judge cost in the modelled configuration",
+      "value": "0",
+      "unit": "CAD per run",
+      "kind": "measured",
+      "source": "rag-eval-harness REPORT.md and level-2-build/judge.py: the default judge is a local lexical proxy at zero per-call cost, the embedding judge runs on CPU with no API key, and judge calls are hard-capped per run",
+      "note": "Run cash cost enters the model as zero; see A7 for the CI allowance"
+    },
+    {
+      "id": "M3",
+      "item": "Regression gate separation on the source synthetic Deep set",
+      "value": "0.719 vs 1.000",
+      "unit": "pass rate",
+      "kind": "measured",
+      "source": "rag-eval-harness REPORT.md (Deep run: 23 of 32 without rerank, 32 of 32 with; gate threshold 0.900)",
+      "note": "Used qualitatively only: evidence the gate discriminates. Not a client outcome and not monetized"
+    },
+    {
+      "id": "M4",
+      "item": "Reranker transfer to real data",
+      "value": "not supported",
+      "unit": "hypothesis verdict",
+      "kind": "measured",
+      "source": "rag-eval-harness REPORT.md hypothesis H2: SQuAD gold in top passage 315 of 500 without rerank, 319 with, exact sign test p 0.67",
+      "note": "Reason no quality or defect-escape saving is monetized anywhere in this model"
+    },
+    {
+      "id": "A1",
+      "item": "Evaluation cycles per year",
+      "value": "12",
+      "unit": "cycles",
+      "kind": "assumption",
+      "source": "Monthly release cadence of the illustrative scenario",
+      "note": "One of the two most fragile assumptions; varied in S3 and S4"
+    },
+    {
+      "id": "A2",
+      "item": "Sampled answers reviewed per cycle in the manual baseline",
+      "value": "200",
+      "unit": "answers",
+      "kind": "assumption",
+      "source": "Scenario planning figure for a monthly support-assistant release",
+      "note": "Drives the manual baseline linearly"
+    },
+    {
+      "id": "A3",
+      "item": "Manual review time per sampled answer",
+      "value": "6",
+      "unit": "minutes",
+      "kind": "assumption",
+      "source": "Scenario planning figure: read the question, the retrieved passage, and the answer; judge against the help-centre source",
+      "note": "One of the two most fragile assumptions; varied in S1, S2, and S4"
+    },
+    {
+      "id": "A4",
+      "item": "Loaded cost of the reviewer",
+      "value": "75",
+      "unit": "CAD per hour",
+      "kind": "assumption",
+      "source": "Scenario planning figure for an ML engineer or QA analyst, fully loaded",
+      "note": "Also sets the adoption day rate in A6"
+    },
+    {
+      "id": "A5",
+      "item": "Share of the sample the harness flags for human review",
+      "value": "15",
+      "unit": "percent",
+      "kind": "assumption",
+      "source": "Scenario planning figure. The source repo's real-data failure shares vary widely by metric and dataset, so no source figure is borrowed for this",
+      "note": "Sets the with-harness review volume in C5"
+    },
+    {
+      "id": "A5b",
+      "item": "Fixed supervision per cycle with the harness",
+      "value": "1",
+      "unit": "hour",
+      "kind": "assumption",
+      "source": "Scenario planning figure: start the run, read the dashboard, record the decision",
+      "note": "Added to the flagged-case review time in C5"
+    },
+    {
+      "id": "A6",
+      "item": "Adoption effort one-time",
+      "value": "5",
+      "unit": "engineer-days",
+      "kind": "assumption",
+      "source": "Build the Firm's golden set, wire the pipeline, set the gate (open item OI-1 in docs/01-business-requirements.md)",
+      "note": "Costed in C8 at 8 hours per day at the A4 rate"
+    },
+    {
+      "id": "A7",
+      "item": "Cash cost per evaluation run",
+      "value": "0",
+      "unit": "CAD",
+      "kind": "assumption",
+      "source": "CI minutes treated as negligible; the run itself is cash-free per M2",
+      "note": "Kept as an explicit zero so the assumption is visible"
+    }
+  ],
+  "computations": [
+    {
+      "id": "C1",
+      "item": "Manual review minutes per cycle",
+      "value": "1200",
+      "unit": "minutes",
+      "working": "200 x 6 = 1200"
+    },
+    {
+      "id": "C2",
+      "item": "Manual review hours per cycle",
+      "value": "20",
+      "unit": "hours",
+      "working": "1200 / 60 = 20"
+    },
+    {
+      "id": "C3",
+      "item": "Manual baseline cost per cycle",
+      "value": "1500",
+      "unit": "CAD",
+      "working": "20 x 75 = 1500"
+    },
+    {
+      "id": "C4",
+      "item": "Manual baseline cost per year",
+      "value": "18000",
+      "unit": "CAD",
+      "working": "1500 x 12 = 18000"
+    },
+    {
+      "id": "C5",
+      "item": "With-harness human hours per cycle",
+      "value": "4",
+      "unit": "hours",
+      "working": "(200 x 0.15 x 6 / 60) + 1 = 3 + 1 = 4"
+    },
+    {
+      "id": "C6",
+      "item": "With-harness cost per cycle",
+      "value": "300",
+      "unit": "CAD",
+      "working": "4 x 75 = 300"
+    },
+    {
+      "id": "C7",
+      "item": "With-harness running cost per year",
+      "value": "3600",
+      "unit": "CAD",
+      "working": "300 x 12 = 3600"
+    },
+    {
+      "id": "C8",
+      "item": "Adoption cost one-time",
+      "value": "3000",
+      "unit": "CAD",
+      "working": "5 x 8 x 75 = 3000"
+    },
+    {
+      "id": "C9",
+      "item": "Year-1 total cost of the harness path",
+      "value": "6600",
+      "unit": "CAD",
+      "working": "3600 + 3000 = 6600"
+    },
+    {
+      "id": "C10",
+      "item": "Year-1 net benefit",
+      "value": "11400",
+      "unit": "CAD",
+      "working": "18000 - 6600 = 11400"
+    },
+    {
+      "id": "C11",
+      "item": "Year-1 ROI",
+      "value": "172.7",
+      "unit": "percent",
+      "working": "11400 / 6600 = 172.7 percent (about 173 percent). Model output under the stated assumptions, not a realized saving"
+    },
+    {
+      "id": "C12",
+      "item": "Payback on adoption cost",
+      "value": "2.5",
+      "unit": "months",
+      "working": "3000 / (1500 - 300) = 2.5"
+    }
+  ],
+  "sensitivity": [
+    {
+      "id": "S1",
+      "item": "A3 at 3 minutes per review (A1 at base)",
+      "value": 71,
+      "working": "Fragile assumption A3 moved down"
+    },
+    {
+      "id": "S2",
+      "item": "A3 at 10 minutes per review (A1 at base)",
+      "value": 257,
+      "working": "Fragile assumption A3 moved up"
+    },
+    {
+      "id": "S3",
+      "item": "A1 at 4 cycles per year (A3 at base)",
+      "value": 43,
+      "working": "Fragile assumption A1 moved down"
+    },
+    {
+      "id": "S4",
+      "item": "Combined unfavourable case (A3 at 3 minutes and A1 at 4 cycles)",
+      "value": -20,
+      "working": "At low cadence and fast manual review the model does not pay back in year 1. Stated plainly, not rounded away"
+    }
+  ],
+  "jevRows": [
+    {
+      "statement": "Headline ROI and payback, as a labelled model output",
+      "noul": 0.88,
+      "route": "Clear"
+    },
+    {
+      "statement": "Labour-only monetization, no quality benefit claimed",
+      "noul": 0.51,
+      "route": "Review"
+    },
+    {
+      "statement": "Gate separates the two measured Deep configurations",
+      "noul": 0.59,
+      "route": "Review"
+    },
+    {
+      "statement": "Zero marginal cash cost per run in the modelled configuration",
+      "noul": 0.42,
+      "route": "Review"
+    },
+    {
+      "statement": "Sensitivity cases, including the negative combined case",
+      "noul": 0.7,
+      "route": "Review"
+    }
+  ],
+  "docs": [
+    {
+      "path": "docs/01-business-requirements.md",
+      "name": "Business requirements",
+      "title": "Business Requirements Document: RAG evaluation capability",
+      "summary": "Problem, six stakeholders, scope with named exclusions, eight functional requirements tied to harness capabilities, and acceptance criteria tied to the harness metrics."
+    },
+    {
+      "path": "docs/02-process-map.md",
+      "name": "Process map",
+      "title": "Process map: evaluation workflow, current and proposed",
+      "summary": "The current manual workflow against the proposed gated one, step by step, with the failure each proposed step prevents and the source evidence for it."
+    },
+    {
+      "path": "docs/03-solution-architecture.md",
+      "name": "Solution architecture",
+      "title": "Solution architecture: RAG evaluation capability",
+      "summary": "Components, data flow, four trust boundaries, deployment shape, and seven recorded decisions with their reasons."
+    },
+    {
+      "path": "docs/04-security-review.md",
+      "name": "Security review",
+      "title": "Security review: RAG evaluation capability",
+      "summary": "Six assets, eight system-specific threats with controls cited to the source repo, five residual risks with owners, and a plain statement that no penetration test was performed."
+    },
+    {
+      "path": "docs/05-roi-model.md",
+      "name": "ROI model",
+      "title": "ROI model: what the evaluation capability returns",
+      "summary": "The worked model below: every input labelled measured or assumption, the computation shown, and the sensitivity cases including the one that does not pay back."
+    },
+    {
+      "path": "docs/06-demo-script.md",
+      "name": "Demo script",
+      "title": "Demo script: rag-eval-harness, 15 minutes",
+      "summary": "A timed 15 minute walkthrough on the real rag-eval-harness dashboard, with speaker notes and honest answers to the three hardest expected questions."
+    }
+  ],
+  "diagrams": {
+    "process": "flowchart TD\n    subgraph Current[\"Current workflow\"]\n        C1[Change the assistant] --> C2[Read a few answers by eye]\n        C2 --> C3[Ship on judgement]\n        C3 --> C4[Failures found by agents and customers]\n        C4 --> C5[Fix the reported case]\n        C5 --> C1\n    end\n    subgraph Proposed[\"Proposed workflow\"]\n        P1[Change the assistant] --> P2[Run harness on golden set]\n        P2 --> P3[Label failures by class]\n        P3 --> P4[Budgeted judge pass, capped]\n        P4 --> P5{Regression gate at 0.900}\n        P5 -->|blocked| P7[Fix by failure class]\n        P7 --> P2\n        P5 -->|passed| P6[Dashboard review and ship]\n        P6 --> P8[Commit result files as the record]\n        P8 --> P1\n    end",
+    "architecture": "flowchart LR\n    GS[Golden set: questions and gold answers] --> PT[Pipeline under test]\n    CORP[Corpus snapshot] --> PT\n    PT --> ANS[Answers with retrieved passages]\n    ANS --> LM[Lexical metrics]\n    ANS --> BJ[Budgeted judge layer]\n    BJ --> EJ[Embedding judge]\n    LM --> RES[Per-case results: scores and failure labels]\n    EJ --> RES\n    RES --> GATE{Regression gate at 0.900}\n    GATE -->|pass| REL[Release decision: ship]\n    GATE -->|fail| BLOCK[Release blocked, fix by failure class]\n    RES --> DASH[Dashboard: aggregates and per-case drill-down]\n    RES --> REP[reproduce.sh: byte-drift check in CI]"
+  },
+  "headline": {
+    "roi": 172.7,
+    "paybackMonths": 2.5,
+    "netBenefitCad": 11400,
+    "year1CostCad": 6600
+  },
+  "base": {
+    "cyclesPerYear": 12,
+    "answersPerCycle": 200,
+    "minutesPerReview": 6,
+    "rateCadPerHour": 75,
+    "flaggedShare": 0.15,
+    "supervisionHours": 1,
+    "adoptionDays": 5
+  }
+}
