@@ -40,6 +40,35 @@ function computeRoi(cycles, minutes) {
   };
 }
 
+function SensitivityChart() {
+  const rows = data.sensitivity;
+  const lo = Math.min(0, ...rows.map((r) => r.value));
+  const hi = Math.max(0, ...rows.map((r) => r.value));
+  const x = (v) => 150 + ((v - lo) / (hi - lo)) * 470;
+  const rowH = 34;
+  const height = rows.length * rowH + 8;
+  return (
+    <figure className="diagram">
+      <svg viewBox={`0 0 720 ${height}`} role="img" aria-label="Bar chart of year-1 ROI for the sensitivity cases in the ROI model, read from the committed model data" className="sens-chart">
+        <line x1={x(0)} x2={x(0)} y1="0" y2={height} className="sens-zero" />
+        {rows.map((r, i) => {
+          const y = i * rowH + 4;
+          const x0 = Math.min(x(0), x(r.value));
+          const w = Math.max(2, Math.abs(x(r.value) - x(0)));
+          return (
+            <g key={r.id}>
+              <text x="0" y={y + 17} className="sens-label">{r.id}</text>
+              <rect x={x0} y={y + 2} width={w} height="20" rx="6" className={r.value < 0 ? "sens-neg" : "sens-pos"} />
+              <text x={r.value < 0 ? x0 - 8 : x0 + w + 8} y={y + 17} textAnchor={r.value < 0 ? "end" : "start"} className="sens-value">{r.value} percent</text>
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption>Year-1 ROI by sensitivity case, from the same committed model data as the table above.</figcaption>
+    </figure>
+  );
+}
+
 function Explorer() {
   const [cycles, setCycles] = useState(data.base.cyclesPerYear);
   const [minutes, setMinutes] = useState(data.base.minutesPerReview);
@@ -79,9 +108,18 @@ function Explorer() {
 export default function App() {
   return (
     <main>
+      <div className="menubar container">
+        <a className="brand" href={REPO}>enterprise-delivery-pack</a>
+        <nav className="meta" aria-label="Repository">
+          <a href={REPO}>Repository</a>
+          <a href="#roi">ROI model</a>
+          <a href={SOURCE}>Source system</a>
+        </nav>
+      </div>
       <header className="hero">
         <div className="container hero-grid">
           <div>
+            <p className="eyebrow">Six documents and an ROI model</p>
             <h1>Enterprise delivery pack</h1>
             <p className="lead">Six delivery documents for rag-eval-harness, plus a labelled, testable ROI model.</p>
             <p className="actions">
@@ -98,6 +136,7 @@ export default function App() {
       </header>
 
       <section className="container section">
+        <p className="eyebrow">Documents</p>
         <h2>The six documents</h2>
         <div className="doc-grid">
           {data.docs.map((d) => (
@@ -111,6 +150,7 @@ export default function App() {
       </section>
 
       <section className="container section">
+        <p className="eyebrow">Diagrams</p>
         <h2>Diagrams from the pack</h2>
         <p className="section-lead">Both diagrams are rendered here from the Mermaid sources committed in the pack documents, so the page cannot drift from the documents.</p>
         <h3>Process map: current workflow against proposed workflow</h3>
@@ -120,6 +160,7 @@ export default function App() {
       </section>
 
       <section className="container section" id="roi">
+        <p className="eyebrow">ROI model</p>
         <h2>The ROI model</h2>
         <p className="section-lead">Headline, as a model output under the stated assumptions: year-1 ROI of {data.headline.roi} percent with a {data.headline.paybackMonths} month payback. It monetizes reviewer time only. No quality benefit is monetized, because the source record shows the flagship improvement did not transfer to real data.</p>
         <h3>Try the two fragile assumptions</h3>
@@ -157,10 +198,12 @@ export default function App() {
             </tbody>
           </table>
         </div>
+        <SensitivityChart />
         <p>The combined unfavourable case (S4) is minus 20 percent: at four cycles a year and three minutes per manual review, the model does not pay back in year 1 on labour alone. It is part of the model, printed here at the same size as the headline.</p>
       </section>
 
       <section className="container section">
+        <p className="eyebrow">Claim gate</p>
         <h2>Claim gate record</h2>
         <p className="section-lead">The ROI and impact statements passed through the Jev claim_check gate before the pack was finalized (model jev-1.13.0, 2026-11-15). Bands: clear at 0.85 or above, block at 0.10 or below, review between.</p>
         <div className="table-wrap">
