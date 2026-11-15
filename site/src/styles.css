@@ -38,6 +38,9 @@ th, td { text-align: left; padding: var(--space-xs) var(--space-sm); border-bott
 tr.neg td { color: var(--color-error); font-weight: 600; }
 .footer { margin-top: var(--section-gap-s); background: var(--color-paper-2); padding-block: var(--space-2xl); }
 .footer .container { display: grid; gap: var(--space-sm); }
+.support-links { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-xs); }
+.support-pill { display: inline-flex; align-items: center; min-height: 48px; padding-inline: var(--space-md); border: var(--rule-hair) solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-cotton); color: var(--color-ink); font-size: var(--text-sm); text-decoration: none; }
+.support-pill:hover { border-color: var(--color-accent-2); color: var(--color-accent-2); }
 @media (max-width: 60rem) {
   .hero-grid, .explorer { grid-template-columns: minmax(0, 1fr); }
 }

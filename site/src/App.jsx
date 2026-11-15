@@ -180,6 +180,12 @@ export default function App() {
         <div className="container">
           <p>Enterprise delivery pack for rag-eval-harness. Every number on this page is generated at build time from the pack files in the repository, and the build fails if the sources drift. The ROI headline is a model output under stated assumptions, not a realized saving.</p>
           <p><a href={REPO}>Repository</a></p>
+          <p className="support-links">
+            <a className="support-pill" href="https://github.com/sponsors/JesunAhmadUshno">Sponsor this work</a>
+            <a className="support-pill" href="https://github.com/sponsors/JesunAhmadUshno">Donate</a>
+            <a className="support-pill" href="https://buymeacoffee.com/jesun">Buy Me a Coffee</a>
+            <a className="support-pill" href="https://calendly.com/jesunahmadushno/30min">Work with me</a>
+          </p>
         </div>
       </footer>
     </main>
