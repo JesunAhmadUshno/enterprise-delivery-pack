@@ -28,6 +28,20 @@ measured in the source repository.
 | [roi/roi-model.csv](roi/roi-model.csv) | The ROI model as data: inputs, the computation, and the sensitivity cases |
 | [docs/06-demo-script.md](docs/06-demo-script.md) | Demo script: a timed 15-minute walkthrough on the real dashboard and repo, with speaker notes and the three hardest expected questions |
 
+## Dashboard
+
+A live dashboard for this pack is at
+https://jesunahmadushno.github.io/enterprise-delivery-pack/.
+It presents the six documents, renders the process map and the
+solution architecture from the Mermaid sources in docs/02 and
+docs/03, and shows the ROI model as data: every input labelled
+measured or assumption, the computation, the sensitivity cases
+including the combined unfavourable case, and an explorer that
+recomputes the ROI from the CSV inputs when the two fragile
+assumptions (A1 and A3) move. The page data is generated at build
+time from the pack files by site/tools/gen-data.mjs, and the build
+fails if the sources drift from what the page states.
+
 ## How the pack was grounded
 
 Every technical and performance claim in these documents traces to a
