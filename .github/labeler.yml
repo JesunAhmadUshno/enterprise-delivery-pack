@@ -1,0 +1,12 @@
+docs:
+  - changed-files:
+      - any-glob-to-any-file: ["docs/**", "README.md"]
+site:
+  - changed-files:
+      - any-glob-to-any-file: ["site/**"]
+roi:
+  - changed-files:
+      - any-glob-to-any-file: ["roi/**"]
+automation:
+  - changed-files:
+      - any-glob-to-any-file: [".github/**"]
